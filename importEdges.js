@@ -108,7 +108,7 @@ async function loadGraph(){
             // The server can contain several named graphs. Without this field,
             // Samyama may successfully query an empty default graph.
             graph: "music_kg",
-            query: "MATCH (a)-[r]->(b) RETURN a,r,b LIMIT 100"
+            query: "MATCH (a)-[r]->(b) RETURN a,r,b LIMIT 1000"
         })
     });
     if (!response.ok) throw new Error(`Samyama query failed with HTTP ${response.status}.`);

@@ -4,3 +4,4 @@ data/processed/
 # Edge extraction writes reproducible intermediate JSONL here. It can be
 # regenerated from the raw MusicBrainz archive, so Git should ignore it too.
 data/staged/
+data/snapshots/*.sgsnap
