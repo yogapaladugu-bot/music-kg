@@ -1,0 +1,6 @@
+# Large source dumps and generated import data must not be committed.
+data/raw/
+data/processed/
+# Edge extraction writes reproducible intermediate JSONL here. It can be
+# regenerated from the raw MusicBrainz archive, so Git should ignore it too.
+data/staged/

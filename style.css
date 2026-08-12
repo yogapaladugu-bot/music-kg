@@ -1,153 +1,284 @@
-body{
-    background-color: black;
-    /* color: rgba(255, 255, 255, 0.8); */
-    text-shadow: 0 0 45px rgba(241, 245, 245, 0.2);
-    color:white;
+/*
+ * MUSIC-NET VISUAL THEME
+ * ----------------------
+ * This stylesheet changes only the webpage's appearance. Graph data still
+ * comes from Samyama through importEdges.js, and vis-network still draws it.
+ */
+
+/* Reusable colors make future redesigns much easier: change a value once. */
+:root {
+    --page: #070908;
+    --surface: rgba(19, 23, 21, 0.88);
+    --surface-strong: #151917;
+    --border: rgba(255, 255, 255, 0.10);
+    --text: #f5f7f5;
+    --muted: #9aa39d;
+    --accent: #1ed760;
+    --accent-hover: #3be477;
+    --danger: #ff6474;
+    --shadow: 0 18px 55px rgba(0, 0, 0, 0.42);
 }
 
- #network{
-     background-color:#020109 ;
-    width:100%;
-    margin:auto;
-    height: 900px;
-    /* border: 3px ridge aqua; */
-    border-radius: 5px;
-    /* box-shadow:
-        0 0 10px aqua,
-        0 0 40px rgba(0,255,255,0.6),
-        inset 0 0 30px rgba(0,255,255,0.3); */
-} 
-#title{
-    display:flex;
-    flex-direction:row;
-    justify-content:center;
-    align-items:center;
-    background-color: #020109;
-    color:whitesmoke;
-}
-#description{
-    display:flex;
-    flex-direction:row;
-    justify-content:center;
-    align-items:center;
-    background-color: #020109;
-    color:whitesmoke;
-}
-#year{
-    display:flex;
-    flex-direction:row;
-    justify-content:center;
-    align-items:center;
-    background-color: #020109;
-    color:whitesmoke;
-}
-#artists{
-    display:flex;
-    flex-direction:row;
-    justify-content:center;
-    align-items:center;
-    background-color: #020109;
-    color:whitesmoke;
-}
-#nextButton{
-    background-color: #020109;
-    color:gray;
-}
-#addGenre{
-    display:flex;
-    flex-direction:row;
-    background-color: #020109;
-    color:whitesmoke;
-
-}
-#reset{
-    background-color: #020109;
-    color:gray;
-}
-#addButton{
-    background-color: black;
-    color:gray;
-    padding-top: 5px;
+/* Border-box keeps padding from unexpectedly increasing element widths. */
+* {
+    box-sizing: border-box;
 }
 
-#type{
-    display:flex;
-    flex-direction:row;
-    background-color: #020109;
-    color:gray;
-}
-.label{
-    color:gray;
-}
-#info{
-    display: none;
-    position:absolute;
-    right:20px;
-    top: 100px;
-    color:aliceblue;
-    width:300px;
-    padding:20px;
-    z-index:10;
-    border:2px solid aqua;
-    box-shadow:0 0 20px aqua;
-}
-#addContainer2{
-    display:flex;
-    flex-direction:row;
-    background-color: #020109;
-    color:whitesmoke;
-}
-#hide{
-    display:none;
-    background-color: #020109;
-    position:absolute;
-    z-index:9999;
-    right:40px;
-    top:130px;
-    color:aliceblue;
-    padding:10px;
-    border:2px solid aqua;
-    box-shadow:0 0 20px aqua;
-}
-#container{
-    display:flex;
-    flex-direction:column;
-    background-color: black;
-    color:aliceblue;
-}
-#search{
-    display:flex;
-    flex-direction:row;
-    justify-content:center;
-    align-items:center;
-    z-index: 1000;
-    width:300px;
-    top: 100%;
-    background-color: #020109;
-    color:whitesmoke;
-}
-.searchContainer{
-    display:flex;
-    flex-direction:row;
-    justify-content:center;
-    align-items:center;
-    width:300px;
-    top: 100%;
-    gap:10px;
-    background-color: #020109;
-}
-#searchButton{
-    background-color: #020109;
-    color:gray;
-}
-/* #config{
-    background-color: #111111;
-    border: 2px dashed aqua;
-    padding: 10px;
-    max-height:500px;
-    overflow-y: auto;
+body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 34px clamp(18px, 4vw, 64px) 48px;
     overflow-x: hidden;
-    top:100px;
-    left:10px;
-    max-width: 300px;
-} */
+    color: var(--text);
+    background:
+        radial-gradient(circle at 15% 0%, rgba(30, 215, 96, 0.14), transparent 30rem),
+        radial-gradient(circle at 90% 12%, rgba(54, 115, 255, 0.10), transparent 34rem),
+        var(--page);
+    font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+h1 {
+    margin: 0 0 28px;
+    font-size: clamp(2.2rem, 6vw, 4.8rem);
+    font-weight: 850;
+    letter-spacing: -0.065em;
+    line-height: 0.95;
+}
+
+h1::after {
+    content: ".";
+    color: var(--accent);
+}
+
+/* Both form rows use the same centered, wrapping layout. */
+#addContainer2,
+#addContainer,
+.searchContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: min(100%, 900px);
+    margin: 0 auto;
+}
+
+#addContainer {
+    margin-top: 10px;
+}
+
+input,
+select,
+button {
+    min-height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font: inherit;
+    transition: border-color 160ms ease, background 160ms ease,
+                color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+input,
+select {
+    padding: 0 17px;
+    color: var(--text);
+    background: var(--surface-strong);
+    outline: none;
+}
+
+input::placeholder {
+    color: #747d77;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(30, 215, 96, 0.13);
+}
+
+button {
+    padding: 0 20px;
+    color: #071108;
+    background: var(--accent);
+    border-color: transparent;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.searchContainer {
+    width: min(100%, 620px);
+    margin-top: 8px;
+}
+
+#search {
+    flex: 1 1 280px;
+    width: auto;
+}
+
+/* Reset is deliberately quieter than the primary green actions. */
+#reset {
+    display: block;
+    margin: 8px auto 18px;
+    color: var(--muted);
+    background: transparent;
+    border-color: var(--border);
+}
+
+#reset:hover {
+    color: var(--text);
+    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* The legend turns graph colors into understandable categories. */
+#legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    width: min(100%, 1100px);
+    margin: 0 auto 18px;
+    color: var(--muted);
+    font-size: 0.78rem;
+}
+
+#legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+#legend i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--node-color);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--node-color) 65%, transparent);
+}
+
+#graphStatus {
+    width: min(100%, 1100px);
+    margin: 0 auto 12px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* This framed panel is the canvas that vis-network fills. */
+#container {
+    position: relative;
+    width: min(100%, 1500px);
+    margin: 0 auto;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(16px);
+}
+
+#network {
+    width: 100%;
+    height: min(72vh, 860px);
+    min-height: 560px;
+    background:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px),
+        radial-gradient(circle at center, #121713 0%, #090b0a 72%);
+    background-size: 34px 34px, 34px 34px, auto;
+}
+
+/* Node information floats above the canvas like a modern detail drawer. */
+#info {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    top: 28px;
+    right: 28px;
+    width: min(360px, calc(100vw - 36px));
+    max-height: calc(100vh - 56px);
+    overflow: auto;
+    padding: 26px;
+    color: var(--text);
+    background: rgba(18, 22, 20, 0.96);
+    border: 1px solid rgba(30, 215, 96, 0.35);
+    border-radius: 20px;
+    box-shadow: var(--shadow), 0 0 40px rgba(30, 215, 96, 0.09);
+    backdrop-filter: blur(18px);
+}
+
+#info h2 {
+    margin: 0 36px 18px 0;
+    font-size: 1.6rem;
+}
+
+#info p {
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+#hide {
+    display: none;
+    position: fixed;
+    z-index: 101;
+    top: 40px;
+    right: 40px;
+    width: 34px;
+    min-height: 34px;
+    padding: 0;
+    overflow: hidden;
+    color: transparent;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border);
+}
+
+/* Replace the word Close with a compact multiplication-style close symbol. */
+#hide::after {
+    content: "×";
+    color: var(--text);
+    font-size: 1.35rem;
+}
+
+#hide:hover {
+    background: rgba(255, 100, 116, 0.18);
+}
+
+@media (max-width: 650px) {
+    body {
+        padding: 24px 12px 28px;
+    }
+
+    #addContainer2 > *,
+    #addContainer > * {
+        width: 100%;
+    }
+
+    #network {
+        height: 68vh;
+        min-height: 480px;
+    }
+
+    #info {
+        top: auto;
+        right: 12px;
+        bottom: 12px;
+        left: 12px;
+        width: auto;
+        max-height: 48vh;
+    }
+
+    #hide {
+        top: auto;
+        right: 24px;
+        bottom: calc(48vh - 2px);
+    }
+}

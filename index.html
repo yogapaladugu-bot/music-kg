@@ -1,43 +1,27 @@
 <!DOCTYPE html>
+<!--
+  This is the webpage's structure. HTML names the controls and containers;
+  style.css controls appearance; the JavaScript files load and operate the graph.
+  An element's `id` is the name JavaScript uses with getElementById().
+-->
 <html>
     <head>
+          <!-- UTF-8 supports artist names and titles from many languages. -->
             <meta charset="UTF-8">
+          <!-- Load our visual rules before displaying the page. -->
           <link rel="stylesheet" href="style.css">
           <title>Music Genred</title>
+          <!-- vis-network is the third-party library that draws the graph. -->
           <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     </head>
 
     <body>
+        <!-- The top section introduces the database-backed music graph. -->
         <center>
         <h1>Music Genres</h1>
         </center>
-        <div class = "addContainer2">
-        <input type = "text" id = "addGenre" placeholder = "Add a new music style">
-        <button id = "nextButton">Next</button>
-        </div>
-        <br>
-        <div id = "addContainer">
-        <input type = "number" id = "year" placeholder = "Add a year" style="display: none;">
-        <input type = "text" id = "artists" placeholder = "Add artists" style="display: none;">
-         <input type = "text" id = "title" placeholder = "Add a title" style="display: none;">
-        <input type = "text" id = "description" placeholder = "Add a description" style="display: none;">
-        </div>
-        <label for = "type" class = "label" id = "typeLabel" style="display: none;">Pick a genre:</label>
-        <select name = "type" id = "type" style="display: none;">
-            <option value = "Blues">Blues</option>
-            <option value = "Country">Country</option>
-            <option value = "Folk">Folk</option>
-            <option value = "Gospel">Gospel</option>
-            <option value = "Jazz">Jazz</option>
-            <option value = "Pop">Pop</option>
-            <option value = "Contemporary R&B">R&B</option>
-            <option value = "Rock">Rock</option>
-        </select>
-        <button id = "addButton" style="display: none;">Add</button>
-        <br>
-        <br>
         <div class = "searchContainer">
-
+        <!-- Search focuses an exact, case-insensitive node-label match. -->
         <input type = "text" id = "search" placeholder = "Search for a genre">
             <button id = "searchButton">Search</button>
         </div>
@@ -45,12 +29,29 @@
             
         <br>
         <br>
-        <button id = "reset">Reset</button>
         <button id = "hide">Close</button>
+
+        <!-- Colors identify entity types without duplicating style data in Samyama. -->
+        <div id="legend" aria-label="Graph node color legend">
+          <span><i style="--node-color:#1ed760"></i>Artist</span>
+          <span><i style="--node-color:#3b82f6"></i>Recording</span>
+          <span><i style="--node-color:#8b5cf6"></i>Work</span>
+          <span><i style="--node-color:#f97316"></i>Label</span>
+          <span><i style="--node-color:#ec4899"></i>Release Group</span>
+          <span><i style="--node-color:#eab308"></i>Release</span>
+          <span><i style="--node-color:#14b8a6"></i>Medium</span>
+          <span><i style="--node-color:#06b6d4"></i>Track</span>
+          <span><i style="--node-color:#ef4444"></i>Instrument</span>
+          <span><i style="--node-color:#a3e635"></i>Genre</span>
+        </div>
+
+        <!-- Always-visible diagnostics make slow queries and browser errors clear. -->
+        <p id="graphStatus" role="status">Preparing graph…</p>
 
     
 
         <div id = "container">
+        <!-- vis-network creates its canvas inside #network. -->
         <div id = "config">
                 
             </div>
@@ -60,8 +61,19 @@
     
         </div>
           <div id = "info">
-            
+            <!-- script.js fills this panel after the user clicks a node. -->
         </div>
+        <!--
+          Script order matters:
+          1. importEdges.js defines loadGraph().
+          2. script.js calls loadGraph() and draws the result.
+          The old demo data/import scripts remain disabled to prevent accidental
+          duplicate writes when somebody opens the page.
+        -->
+        <!-- <script src = "data.js"></script> -->
+       <script src = "importEdges.js"></script>
+        <!-- <script src = "import.js"></script> -->
+
         <script src = "script.js"></script>
     </body>
 </html>
