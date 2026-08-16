@@ -11,6 +11,7 @@ const relationshipCursors = [0]; // Cursor used to enter every visited page.
 let relationshipPageNumber = 0;
 let relationshipNetwork;
 let visibleRelationshipNodes;
+let visibleRelationships; // vis DataSet containing the current page's 100 edges.
 
 const relationshipContainer = document.getElementById("network");
 const relationshipStatus = document.getElementById("graphStatus");
@@ -47,24 +48,52 @@ relationshipStatus.before(relationshipPagination);
 function drawRelationshipGraph(graph) {
     if (relationshipNetwork) relationshipNetwork.destroy();
     visibleRelationshipNodes = new vis.DataSet(graph.nodes);
-    const edges = new vis.DataSet(graph.edges);
-    relationshipNetwork = new vis.Network(relationshipContainer, { nodes: visibleRelationshipNodes, edges }, {
+    visibleRelationships = new vis.DataSet(graph.edges);
+    relationshipNetwork = new vis.Network(relationshipContainer, { nodes: visibleRelationshipNodes, edges: visibleRelationships }, {
         interaction: { dragNodes: true, dragView: true, hover: true },
         physics: { enabled: true },
         edges: { arrows: { to: { enabled: true } }, scaling: { min: 1, max: 5 } },
     });
 
-    // Reuse the safe text-only information panel behavior from label pages.
+    // Build the requested close control inside the panel each time it opens.
+    // textContent and replaceChildren keep all database text safe as plain text.
+    function addCloseButton() {
+        const closeButton = document.createElement("button");
+        closeButton.type = "button";
+        closeButton.className = "informationPanelClose";
+        closeButton.textContent = "×";
+        closeButton.setAttribute("aria-label", "Close relationship details");
+        closeButton.addEventListener("click", () => {
+            relationshipInfo.style.display = "none";
+            relationshipNetwork.unselectAll();
+        });
+        relationshipInfo.append(closeButton);
+    }
+
+    // Clicking either an endpoint node or its connecting line opens details.
     relationshipNetwork.on("click", params => {
-        if (!params.nodes.length) return;
-        const node = visibleRelationshipNodes.get(params.nodes[0]);
         relationshipInfo.replaceChildren();
+        addCloseButton();
         const heading = document.createElement("h2");
-        heading.textContent = node.label;
         const type = document.createElement("p");
-        type.textContent = `Type: ${node.entityType}`;
         const description = document.createElement("p");
-        description.textContent = node.description;
+
+        if (params.nodes.length) {
+            const node = visibleRelationshipNodes.get(params.nodes[0]);
+            heading.textContent = node.label;
+            type.textContent = `Type: ${node.entityType}`;
+            description.textContent = node.description;
+        } else if (params.edges.length) {
+            const edge = visibleRelationships.get(params.edges[0]);
+            heading.textContent = edge.relationshipType.replaceAll("_", " ");
+            type.textContent = `Relationship: ${edge.from} → ${edge.to}`;
+            description.textContent = edge.title;
+        } else {
+            // Clicking empty canvas space closes an already-open panel.
+            relationshipInfo.style.display = "none";
+            return;
+        }
+
         relationshipInfo.append(heading, type, description);
         relationshipInfo.style.display = "block";
     });
@@ -115,7 +144,7 @@ async function showRelationshipPage(requestedPage) {
     }
 }
 
-// Requests happen only after the corrected direct-ID reader is deployed.
+// Requests happen only when the page opens or a visitor changes pages.
 relationshipPrevious.addEventListener("click", () => showRelationshipPage(relationshipPageNumber - 1));
 relationshipNext.addEventListener("click", () => showRelationshipPage(relationshipPageNumber + 1));
 relationshipSearchButton.addEventListener("click", searchVisibleRelationshipNodes);
@@ -123,10 +152,6 @@ relationshipSearchInput.addEventListener("keydown", event => {
     if (event.key === "Enter") searchVisibleRelationshipNodes();
 });
 
-// Do not automatically trigger the legacy edge iterator: live testing showed
-// that even three edges could read hundreds of megabytes and delay Samyama.
-// Re-enable showRelationshipPage(0) after the direct-ID build is deployed.
-relationshipPrevious.disabled = true;
-relationshipNext.disabled = true;
-relationshipPageStatus.textContent = "Temporarily unavailable";
-relationshipStatus.textContent = "The relationship reader is being optimized; label pages remain available.";
+// The direct-ID RocksDB reader is deployed and bounded at 100 relationships,
+// so opening this page can safely load the first relationship batch again.
+showRelationshipPage(0);

@@ -316,6 +316,30 @@ button:active {
     line-height: 1.55;
 }
 
+/* Relationship details use a visible, softly glowing red close control. */
+.informationPanelClose {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    min-height: 36px;
+    padding: 0;
+    color: #fff;
+    font-size: 1.45rem;
+    line-height: 1;
+    background: rgba(185, 45, 58, 0.72);
+    border: 1px solid rgba(255, 125, 136, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(255, 74, 91, 0.32);
+}
+
+.informationPanelClose:hover,
+.informationPanelClose:focus-visible {
+    background: rgba(220, 55, 70, 0.9);
+    border-color: #ff9aa4;
+    box-shadow: 0 0 17px rgba(255, 74, 91, 0.52);
+}
+
 #hide {
     display: none;
     position: fixed;

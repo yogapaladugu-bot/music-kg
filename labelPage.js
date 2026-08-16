@@ -24,6 +24,21 @@ const networkContainer = document.getElementById("network");
 const graphStatus = document.getElementById("graphStatus");
 const infoPanel = document.getElementById("info");
 
+// Create the same accessible close control used by the relationship page.
+// All ten label webpages share this file, so one function covers every panel.
+function addInformationPanelCloseButton() {
+    const closeButton = document.createElement("button");
+    closeButton.type = "button";
+    closeButton.className = "informationPanelClose";
+    closeButton.textContent = "×";
+    closeButton.setAttribute("aria-label", "Close information panel");
+    closeButton.addEventListener("click", () => {
+        infoPanel.style.display = "none";
+        if (network) network.unselectAll();
+    });
+    infoPanel.append(closeButton);
+}
+
 // Create the same visible-page search bar on every label webpage. Searching
 // only the current bounded batch is instant and cannot scan the full database.
 const searchContainer = document.createElement("div");
@@ -66,6 +81,7 @@ function drawLabelGraph(graph) {
         if (!params.nodes.length) return;
         const node = visibleLabelNodes.get(params.nodes[0]);
         infoPanel.replaceChildren();
+        addInformationPanelCloseButton();
         const heading = document.createElement("h2");
         heading.textContent = node.label;
         const type = document.createElement("p");
