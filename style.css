@@ -12,7 +12,8 @@
     --surface-strong: #151917;
     --border: rgba(255, 255, 255, 0.10);
     --text: #f5f7f5;
-    --muted: #9aa39d;
+    /* Keep secondary labels fully readable against the dark background. */
+    --muted: #ffffff;
     --accent: #1ed760;
     --accent-hover: #3be477;
     --danger: #ff6474;
@@ -50,6 +51,58 @@ h1::after {
     color: var(--accent);
 }
 
+/* The home directory and back arrow use the same pill-shaped visual language
+   as the existing graph controls. They are ordinary links, not JavaScript. */
+.labelDirectory {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: min(100%, 1100px);
+    margin: 0 auto 24px;
+}
+
+.labelDirectory a,
+.homeLink {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 18px;
+    color: var(--muted);
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-weight: 750;
+    text-decoration: none;
+    transition: border-color 160ms ease, background 160ms ease,
+                color 160ms ease, transform 160ms ease;
+}
+
+.labelDirectory a:hover,
+.homeLink:hover {
+    color: #071108;
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.entityHeader {
+    width: min(100%, 1500px);
+    margin: 0 auto 28px;
+}
+
+.entityHeader h1 {
+    margin-top: 28px;
+    text-align: center;
+}
+
+.entityIntro {
+    margin: 0 auto 18px;
+    color: var(--muted);
+    text-align: center;
+}
+
 /* Both form rows use the same centered, wrapping layout. */
 #addContainer2,
 #addContainer,
@@ -61,6 +114,42 @@ h1::after {
     gap: 10px;
     width: min(100%, 900px);
     margin: 0 auto;
+}
+
+#graphViews,
+#pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 auto 18px;
+}
+
+.viewButton {
+    color: var(--muted);
+    background: transparent;
+    border-color: var(--border);
+}
+
+.viewButton.active {
+    color: #071108;
+    background: var(--accent);
+}
+
+#pagination[hidden] {
+    display: none;
+}
+
+#pagination button:disabled {
+    cursor: not-allowed;
+    opacity: 0.38;
+    transform: none;
+}
+
+#pageStatus {
+    min-width: 130px;
+    color: var(--muted);
+    text-align: center;
 }
 
 #addContainer {
@@ -119,7 +208,8 @@ button:active {
     margin-top: 8px;
 }
 
-#search {
+#search,
+.searchContainer input {
     flex: 1 1 280px;
     width: auto;
 }

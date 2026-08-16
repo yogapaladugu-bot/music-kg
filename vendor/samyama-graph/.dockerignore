@@ -1,0 +1,8 @@
+# Do not send the 19 GB compiler cache to Docker when packaging the server.
+*
+!Dockerfile.runtime
+!target/
+target/*
+!target/debug/
+target/debug/*
+!target/debug/samyama

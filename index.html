@@ -10,70 +10,31 @@
             <meta charset="UTF-8">
           <!-- Load our visual rules before displaying the page. -->
           <link rel="stylesheet" href="style.css">
-          <title>Music Genred</title>
-          <!-- vis-network is the third-party library that draws the graph. -->
-          <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+          <title>Music Knowledge Graph</title>
     </head>
 
     <body>
         <!-- The top section introduces the database-backed music graph. -->
         <center>
-        <h1>Music Genres</h1>
+        <h1>Music Knowledge Graph</h1>
+        <p class="entityIntro">Choose a section to explore different aspects of music</p>
         </center>
-        <div class = "searchContainer">
-        <!-- Search focuses an exact, case-insensitive node-label match. -->
-        <input type = "text" id = "search" placeholder = "Search for a genre">
-            <button id = "searchButton">Search</button>
-        </div>
-        <br>
-            
-        <br>
-        <br>
-        <button id = "hide">Close</button>
-
-        <!-- Colors identify entity types without duplicating style data in Samyama. -->
-        <div id="legend" aria-label="Graph node color legend">
-          <span><i style="--node-color:#1ed760"></i>Artist</span>
-          <span><i style="--node-color:#3b82f6"></i>Recording</span>
-          <span><i style="--node-color:#8b5cf6"></i>Work</span>
-          <span><i style="--node-color:#f97316"></i>Label</span>
-          <span><i style="--node-color:#ec4899"></i>Release Group</span>
-          <span><i style="--node-color:#eab308"></i>Release</span>
-          <span><i style="--node-color:#14b8a6"></i>Medium</span>
-          <span><i style="--node-color:#06b6d4"></i>Track</span>
-          <span><i style="--node-color:#ef4444"></i>Instrument</span>
-          <span><i style="--node-color:#a3e635"></i>Genre</span>
-        </div>
-
-        <!-- Always-visible diagnostics make slow queries and browser errors clear. -->
-        <p id="graphStatus" role="status">Preparing graph…</p>
-
-    
-
-        <div id = "container">
-        <!-- vis-network creates its canvas inside #network. -->
-        <div id = "config">
-                
-            </div>
-        <div id = "network">
-            
-        </div>
-    
-        </div>
-          <div id = "info">
-            <!-- script.js fills this panel after the user clicks a node. -->
-        </div>
-        <!--
-          Script order matters:
-          1. importEdges.js defines loadGraph().
-          2. script.js calls loadGraph() and draws the result.
-          The old demo data/import scripts remain disabled to prevent accidental
-          duplicate writes when somebody opens the page.
-        -->
-        <!-- <script src = "data.js"></script> -->
-       <script src = "importEdges.js"></script>
-        <!-- <script src = "import.js"></script> -->
-
-        <script src = "script.js"></script>
+        <!-- Each link opens a focused, bounded view for one database label. -->
+        <nav class="labelDirectory" aria-label="Browse the graph by node type">
+          <a href="artist.html">Artists</a>
+          <a href="recording.html">Recordings</a>
+          <a href="work.html">Works</a>
+          <a href="label.html">Labels</a>
+          <a href="release-group.html">Release Groups</a>
+          <a href="release.html">Releases</a>
+          <a href="medium.html">Mediums</a>
+          <a href="track.html">Tracks</a>
+          <a href="instrument.html">Instruments</a>
+          <a href="genre.html">Genres</a>
+          <!-- This mixed view shows how all of the entity types connect. -->
+          <a href="relationships.html">Relationships</a>
+        </nav>
+        <!-- Individual label pages load bounded graph data. The home page does
+             not query Samyama, so merely opening it is always lightweight. -->
     </body>
 </html>

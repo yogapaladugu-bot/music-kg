@@ -5,3 +5,7 @@ data/processed/
 # regenerated from the raw MusicBrainz archive, so Git should ignore it too.
 data/staged/
 data/snapshots/*.sgsnap
+
+# Rust compilation output for the recovered Samyama source is large and can
+# always be regenerated. Keep the readable source, never the build cache.
+vendor/samyama-graph/target/

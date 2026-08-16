@@ -1,0 +1,15 @@
+# Keep the runtime small: compilation happens in the separate builder image.
+FROM debian:bookworm-slim
+
+# The compiled RocksDB binary dynamically links only the standard C++ runtime.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libstdc++6 ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# This executable already passed isolated disk-first pagination and restart tests.
+COPY target/debug/samyama /usr/local/bin/samyama
+
+WORKDIR /data
+EXPOSE 6379 8080
+ENTRYPOINT ["samyama"]
+CMD ["--host", "0.0.0.0"]

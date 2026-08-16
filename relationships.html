@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<!-- This page deliberately mixes labels because its purpose is connectivity. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <title>Relationships | Music Knowledge Graph</title>
+</head>
+<body>
+  <header class="entityHeader">
+    <a class="homeLink" href="index.html" aria-label="Back to home">← Home</a>
+    <h1>Relationships</h1>
+    <p class="entityIntro">Explore bounded groups of connections across the complete music graph.</p>
+  </header>
+  <!-- relationshipPage.js updates this message after each database request. -->
+  <p id="graphStatus" role="status">Preparing 100 relationships…</p>
+  <main id="container"><div id="network"></div></main>
+  <!-- Clicking a node opens its information in this existing styled panel. -->
+  <div id="info"></div>
+  <!-- Script order matters: drawing library, data loader, then page controls. -->
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script src="importEdges.js"></script>
+  <script src="relationshipPage.js"></script>
+</body>
+</html>

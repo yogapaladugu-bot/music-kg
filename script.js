@@ -24,6 +24,15 @@ let edges;
 const container = document.getElementById("network");
 const info = document.getElementById("info");
 const graphStatus = document.getElementById("graphStatus");
+const relationshipsView = document.getElementById("relationshipsView");
+const genresView = document.getElementById("genresView");
+const pagination = document.getElementById("pagination");
+const previousPage = document.getElementById("previousPage");
+const nextPage = document.getElementById("nextPage");
+const pageStatus = document.getElementById("pageStatus");
+const GENRE_PAGE_SIZE = 50;
+let currentView = "genres";
+let currentGenrePage = 0;
 // const data = {
 //     nodes: nodes,
 //     edges: edges
@@ -69,6 +78,14 @@ edges: {
 // The vis Network instance is kept here so searchGenre() can focus it later.
 let network;
 
+function drawGraph(graph) {
+    if (network) network.destroy();
+    nodes = new vis.DataSet(graph.nodes);
+    edges = new vis.DataSet(graph.edges);
+    network = new vis.Network(container, { nodes, edges }, options);
+    network.on("click", onClick);
+}
+
 async function startGraph(){
     // Large disk-backed graph queries can take several seconds. Showing this
     // message distinguishes "still loading" from a genuinely empty webpage.
@@ -84,16 +101,7 @@ async function startGraph(){
             throw new Error("Samyama returned no connected graph data.");
         }
 
-        nodes = new vis.DataSet(graph.nodes);
-        edges = new vis.DataSet(graph.edges);
-
-
-        const data = { nodes, edges };
-
-
-        network = new vis.Network(container, data, options);
-        // vis-network exposes `.on()` for graph events.
-        network.on("click", onClick);
+        drawGraph(graph);
         network.once("afterDrawing", () => {
             graphStatus.textContent = `Showing ${graph.nodes.length} connected nodes and ${graph.edges.length} relationships.`;
         });
@@ -107,8 +115,38 @@ async function startGraph(){
 
 }
 
-// Begin loading only after all three browser scripts have been evaluated.
-startGraph();
+async function showRelationships() {
+    currentView = "relationships";
+    relationshipsView.classList.add("active");
+    genresView.classList.remove("active");
+    pagination.hidden = true;
+    await startGraph();
+}
+
+async function showGenrePage(requestedPage = currentGenrePage) {
+    currentView = "genres";
+    relationshipsView.classList.remove("active");
+    genresView.classList.add("active");
+    pagination.hidden = false;
+    graphStatus.textContent = "Loading a bounded page of Wikidata Genres…";
+    try {
+        const graph = await loadGenrePage(requestedPage, GENRE_PAGE_SIZE);
+        currentGenrePage = graph.pageIndex;
+        drawGraph(graph);
+        previousPage.disabled = currentGenrePage === 0;
+        nextPage.disabled = currentGenrePage >= graph.pageCount - 1;
+        pageStatus.textContent = `Page ${currentGenrePage + 1} of ${graph.pageCount}`;
+        graphStatus.textContent = `Showing ${graph.nodes.length} of ${graph.totalNodes.toLocaleString()} Genres and ${graph.edges.length} relationships on this page.`;
+        info.style.display = "none";
+    } catch (error) {
+        console.error(error);
+        graphStatus.textContent = `Genre view error: ${error.message}`;
+    }
+}
+
+// Begin with the bounded Genre browser. The older 100-relationship Samyama
+// preview runs only if the visitor explicitly selects Artist Relationships.
+showGenrePage(0);
 
 function hideBox(){
         // Hide both the information panel and its close button.
@@ -168,3 +206,7 @@ function onClick(params){ //params is the information about the click event and 
 searchButton.addEventListener("click", searchGenre);
 button.addEventListener("click", hideBox);
 searchInput.addEventListener("keypress", clickEnter);
+relationshipsView.addEventListener("click", showRelationships);
+genresView.addEventListener("click", () => showGenrePage(0));
+previousPage.addEventListener("click", () => showGenrePage(currentGenrePage - 1));
+nextPage.addEventListener("click", () => showGenrePage(currentGenrePage + 1));
